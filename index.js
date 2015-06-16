@@ -113,4 +113,5 @@ Subst.prototype.umount = function (callback) {
   this._desubst (callback);
 };
 
-module.exports = Subst;
+module.exports.Subst = Subst;
+module.exports.wrap  = require ('./lib/wrap.js');

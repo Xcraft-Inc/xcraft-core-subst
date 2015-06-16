@@ -11,14 +11,15 @@
     "subst",
     "win"
   ],
-  "repository" : {
-    "type" : "file",
-    "url" : "lib/xcraft-core-subst"
+  "repository": {
+    "type": "file",
+    "url": "lib/xcraft-core-subst"
   },
   "author": "Mathieu Schroeter",
   "license": "MIT",
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^1.2.1",
+    "xcraft-core-fs": "0.1.0",
     "xcraft-core-platform": "0.1.0",
     "xcraft-core-process": "0.1.0"
   },
