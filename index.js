@@ -1,8 +1,13 @@
 'use strict';
 
+var moduleName = 'subst';
+
 var async     = require ('async');
-var xProcess  = require ('xcraft-core-process') ();
 var xPlatform = require ('xcraft-core-platform');
+var xProcess  = require ('xcraft-core-process') ({
+  logger: 'xlog',
+  mod:    moduleName
+});
 
 
 function prevChar (c) {
