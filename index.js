@@ -4,6 +4,7 @@ var moduleName = 'subst';
 
 var async     = require ('async');
 var xPlatform = require ('xcraft-core-platform');
+var xLog      = require ('xcraft-core-log') (moduleName);
 var xProcess  = require ('xcraft-core-process') ({
   logger: 'xlog',
   mod:    moduleName
@@ -105,17 +106,23 @@ Subst.prototype.mount = function (callback) {
       return;
     }
 
+    xLog.info ('mount %s on %s', self.location, self._getDrive ());
     callback (null, self._getDrive ());
   });
 };
 
 Subst.prototype.umount = function (callback) {
+  var self = this;
+
   if (xPlatform.getOs () !== 'win') {
     callback ();
     return;
   }
 
-  this._desubst (callback);
+  this._desubst (function (err, results) {
+    xLog.info ('umount %s', self._getDrive ());
+    callback (err, results);
+  });
 };
 
 module.exports.Subst = Subst;
