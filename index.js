@@ -7,7 +7,8 @@ var xPlatform = require ('xcraft-core-platform');
 var xLog      = require ('xcraft-core-log') (moduleName);
 var xProcess  = require ('xcraft-core-process') ({
   logger: 'xlog',
-  mod:    moduleName
+  mod:    moduleName,
+  parser: 'null'
 });
 
 
