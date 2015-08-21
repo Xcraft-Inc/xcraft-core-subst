@@ -41,7 +41,7 @@ Subst.prototype._exec = function (cmd, opts, testCode, callback) {
       options[index] = typeof (it) === 'function' ? it.apply (self) : it;
     });
 
-    xProcess.spawn (cmd, options, {} , function (err, code) {
+    xProcess.spawn (cmd, options, {}, function (err, code) {
       if (err) {
         callback (err);
         return;
