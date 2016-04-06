@@ -1,28 +1,21 @@
 'use strict';
 
-var moduleName = 'subst';
-
 var async     = require ('async');
 var xPlatform = require ('xcraft-core-platform');
-var xLog      = require ('xcraft-core-log') (moduleName);
-var xProcess  = require ('xcraft-core-process') ({
-  logger: 'xlog',
-  mod:    moduleName,
-  parser: 'null'
-});
 
 
 function prevChar (c) {
   return String.fromCharCode (c.charCodeAt (0) - 1);
 }
 
-function Subst (location) {
+function Subst (location, response) {
   if (!(this instanceof Subst)) {
-    return new Subst (location);
+    return new Subst (location, response);
   }
 
   this.drive    = 'z';
   this.location = location;
+  this._response = response;
 }
 
 Subst.prototype._getDrive = function () {
@@ -39,6 +32,12 @@ Subst.prototype._exec = function (cmd, opts, testCode, callback) {
     var options = [];
     opts.forEach (function (it, index) {
       options[index] = typeof (it) === 'function' ? it.apply (self) : it;
+    });
+
+    const xProcess  = require ('xcraft-core-process') ({
+      logger: 'xlog',
+      parser: 'null',
+      response: self._response
     });
 
     xProcess.spawn (cmd, options, {}, function (err, code) {
@@ -82,6 +81,12 @@ Subst.prototype._subst = function (callback) {
 };
 
 Subst.prototype._desubst = function (callback ) {
+  var xProcess  = require ('xcraft-core-process') ({
+    logger: 'xlog',
+    parser: 'null',
+    response: this._response
+  });
+
   xProcess.spawn ('subst',  ['/D', this._getDrive ()], {}, callback);
 };
 
@@ -107,7 +112,7 @@ Subst.prototype.mount = function (callback) {
       return;
     }
 
-    xLog.info ('mount %s on %s', self.location, self._getDrive ());
+    self.response.log.info ('mount %s on %s', self.location, self._getDrive ());
     callback (null, self._getDrive ());
   });
 };
@@ -121,7 +126,7 @@ Subst.prototype.umount = function (callback) {
   }
 
   this._desubst (function (err, results) {
-    xLog.info ('umount %s', self._getDrive ());
+    self.response.log.info ('umount %s', self._getDrive ());
     callback (err, results);
   });
 };
