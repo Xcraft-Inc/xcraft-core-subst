@@ -112,7 +112,7 @@ Subst.prototype.mount = function (callback) {
       return;
     }
 
-    self.response.log.info ('mount %s on %s', self.location, self._getDrive ());
+    self._response.log.info ('mount %s on %s', self.location, self._getDrive ());
     callback (null, self._getDrive ());
   });
 };
@@ -126,7 +126,7 @@ Subst.prototype.umount = function (callback) {
   }
 
   this._desubst (function (err, results) {
-    self.response.log.info ('umount %s', self._getDrive ());
+    self._response.log.info ('umount %s', self._getDrive ());
     callback (err, results);
   });
 };
