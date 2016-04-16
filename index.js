@@ -8,14 +8,14 @@ function prevChar (c) {
   return String.fromCharCode (c.charCodeAt (0) - 1);
 }
 
-function Subst (location, response) {
+function Subst (location, resp) {
   if (!(this instanceof Subst)) {
-    return new Subst (location, response);
+    return new Subst (location, resp);
   }
 
   this.drive    = 'z';
   this.location = location;
-  this._response = response;
+  this._resp    = resp;
 
   watt.wrapAll (this);
 }
@@ -41,7 +41,7 @@ Subst.prototype._exec = function * (cmd, opts, testCode, next) {
     const xProcess = require ('xcraft-core-process') ({
       logger: 'xlog',
       parser: 'null',
-      response: this._response
+      resp:   this._resp
     });
 
     const code = yield xProcess.spawn (cmd, options, {}, next);
@@ -79,7 +79,7 @@ Subst.prototype._desubst = function * (next) {
   const xProcess = require ('xcraft-core-process') ({
     logger: 'xlog',
     parser: 'null',
-    response: this._response
+    resp:   this._resp
   });
 
   return yield xProcess.spawn ('subst',  ['/D', this._getDrive ()], {}, next);
@@ -94,7 +94,7 @@ Subst.prototype.mount = function * (next) {
   yield this._netUse (next);
   yield this._subst (next);
 
-  this._response.log.info ('mount %s on %s', this.location, this._getDrive ());
+  this._resp.log.info ('mount %s on %s', this.location, this._getDrive ());
   return this._getDrive ();
 };
 
@@ -104,7 +104,7 @@ Subst.prototype.umount = function * (next) {
   }
 
   const results = yield this._desubst (next);
-  this._response.log.info ('umount %s', this._getDrive ());
+  this._resp.log.info ('umount %s', this._getDrive ());
   return results;
 };
 
