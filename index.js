@@ -64,15 +64,15 @@ Subst.prototype._exec = function * (cmd, opts, testCode, next) {
  * This test is necessary because the subst command is ables to subst a mapped
  * drive when this one is disconnected. This behaviour is not acceptable.
  */
-Subst.prototype._netUse = function (callback) {
-  this._exec ('net', ['use', this._getDrive], 2, callback);
+Subst.prototype._netUse = function (next) {
+  this._exec ('net', ['use', this._getDrive], 2, next);
 };
 
 /*
  * Not like _netUse, here the drive is substed when possible.
  */
-Subst.prototype._subst = function (callback) {
-  this._exec ('subst', [this._getDrive, this.location], 0, callback);
+Subst.prototype._subst = function (next) {
+  this._exec ('subst', [this._getDrive, this.location], 0, next);
 };
 
 Subst.prototype._desubst = function * (next) {
