@@ -1,6 +1,6 @@
 'use strict';
 
-const async     = require ('async');
+const watt      = require ('watt');
 const xPlatform = require ('xcraft-core-platform');
 
 
@@ -16,50 +16,46 @@ function Subst (location, response) {
   this.drive    = 'z';
   this.location = location;
   this._response = response;
+
+  watt.wrapAll (this);
 }
 
 Subst.prototype._getDrive = function () {
   return this.drive + ':';
 };
 
-Subst.prototype._exec = function (cmd, opts, testCode, callback) {
-  let searching = true;
+Subst.prototype._getOptions = function (opts) {
+  const options = [];
 
-  async.whilst (() => {
-    return searching;
-  }, (callback) => {
-    const options = [];
-    opts.forEach ((it, index) => {
-      options[index] = typeof (it) === 'function' ? it.apply (this) : it;
-    });
+  opts.forEach ((opt, index) => {
+    options[index] = typeof opt === 'function' ? opt.apply (this) : opt;
+  });
 
-    const xProcess  = require ('xcraft-core-process') ({
+  return options;
+};
+
+Subst.prototype._exec = function * (cmd, opts, testCode, next) {
+  while (true) {
+    const options = this._getOptions (opts);
+
+    const xProcess = require ('xcraft-core-process') ({
       logger: 'xlog',
       parser: 'null',
       response: this._response
     });
 
-    xProcess.spawn (cmd, options, {}, (err, code) => {
-      if (err) {
-        callback (err);
-        return;
+    const code = yield xProcess.spawn (cmd, options, {}, next);
+    /* Is already used? */
+    if (code !== testCode) {
+      if (this.drive === 'a') {
+        throw 'no more drive letter available';
       }
 
-      /* Is already used? */
-      if (code !== testCode) {
-        if (this.drive === 'a') {
-          callback ('no more drive letter available');
-          return;
-        }
-
-        this.drive = prevChar (this.drive);
-      } else {
-        searching = false;
-      }
-
-      callback ();
-    });
-  }, callback);
+      this.drive = prevChar (this.drive);
+    } else {
+      break;
+    }
+  }
 };
 
 /*
@@ -89,29 +85,17 @@ Subst.prototype._desubst = function (callback ) {
   xProcess.spawn ('subst',  ['/D', this._getDrive ()], {}, callback);
 };
 
-Subst.prototype.mount = function (callback) {
+Subst.prototype.mount = function * (next) {
   /* Nothing substed on non-windows platforms. */
   if (xPlatform.getOs () !== 'win') {
-    callback (null, this.location);
-    return;
+    return this.location;
   }
 
-  async.series ([
-    (callback) => {
-      this._netUse (callback);
-    },
-    (callback) => {
-      this._subst (callback);
-    }
-  ], (err) => {
-    if (err) {
-      callback (err);
-      return;
-    }
+  yield this._netUse (next);
+  yield this._subst (next);
 
-    this._response.log.info ('mount %s on %s', this.location, this._getDrive ());
-    callback (null, this._getDrive ());
-  });
+  this._response.log.info ('mount %s on %s', this.location, this._getDrive ());
+  return this._getDrive ();
 };
 
 Subst.prototype.umount = function (callback) {
