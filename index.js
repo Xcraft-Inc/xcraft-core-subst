@@ -23,24 +23,23 @@ Subst.prototype._getDrive = function () {
 };
 
 Subst.prototype._exec = function (cmd, opts, testCode, callback) {
-  const self = this;
   let searching = true;
 
-  async.whilst (function () {
+  async.whilst (() => {
     return searching;
-  }, function (callback) {
+  }, (callback) => {
     const options = [];
-    opts.forEach (function (it, index) {
-      options[index] = typeof (it) === 'function' ? it.apply (self) : it;
+    opts.forEach ((it, index) => {
+      options[index] = typeof (it) === 'function' ? it.apply (this) : it;
     });
 
     const xProcess  = require ('xcraft-core-process') ({
       logger: 'xlog',
       parser: 'null',
-      response: self._response
+      response: this._response
     });
 
-    xProcess.spawn (cmd, options, {}, function (err, code) {
+    xProcess.spawn (cmd, options, {}, (err, code) => {
       if (err) {
         callback (err);
         return;
@@ -48,12 +47,12 @@ Subst.prototype._exec = function (cmd, opts, testCode, callback) {
 
       /* Is already used? */
       if (code !== testCode) {
-        if (self.drive === 'a') {
+        if (this.drive === 'a') {
           callback ('no more drive letter available');
           return;
         }
 
-        self.drive = prevChar (self.drive);
+        this.drive = prevChar (this.drive);
       } else {
         searching = false;
       }
@@ -91,42 +90,38 @@ Subst.prototype._desubst = function (callback ) {
 };
 
 Subst.prototype.mount = function (callback) {
-  const self = this;
-
   /* Nothing substed on non-windows platforms. */
   if (xPlatform.getOs () !== 'win') {
-    callback (null, self.location);
+    callback (null, this.location);
     return;
   }
 
   async.series ([
-    function (callback) {
-      self._netUse (callback);
+    (callback) => {
+      this._netUse (callback);
     },
-    function (callback) {
-      self._subst (callback);
+    (callback) => {
+      this._subst (callback);
     }
-  ], function (err) {
+  ], (err) => {
     if (err) {
       callback (err);
       return;
     }
 
-    self._response.log.info ('mount %s on %s', self.location, self._getDrive ());
-    callback (null, self._getDrive ());
+    this._response.log.info ('mount %s on %s', this.location, this._getDrive ());
+    callback (null, this._getDrive ());
   });
 };
 
 Subst.prototype.umount = function (callback) {
-  const self = this;
-
   if (xPlatform.getOs () !== 'win') {
     callback ();
     return;
   }
 
-  this._desubst (function (err, results) {
-    self._response.log.info ('umount %s', self._getDrive ());
+  this._desubst ((err, results) => {
+    this._response.log.info ('umount %s', this._getDrive ());
     callback (err, results);
   });
 };
