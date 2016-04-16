@@ -75,14 +75,14 @@ Subst.prototype._subst = function (callback) {
   this._exec ('subst', [this._getDrive, this.location], 0, callback);
 };
 
-Subst.prototype._desubst = function (callback ) {
-  const xProcess  = require ('xcraft-core-process') ({
+Subst.prototype._desubst = function * (next) {
+  const xProcess = require ('xcraft-core-process') ({
     logger: 'xlog',
     parser: 'null',
     response: this._response
   });
 
-  xProcess.spawn ('subst',  ['/D', this._getDrive ()], {}, callback);
+  return yield xProcess.spawn ('subst',  ['/D', this._getDrive ()], {}, next);
 };
 
 Subst.prototype.mount = function * (next) {
@@ -98,16 +98,14 @@ Subst.prototype.mount = function * (next) {
   return this._getDrive ();
 };
 
-Subst.prototype.umount = function (callback) {
+Subst.prototype.umount = function * (next) {
   if (xPlatform.getOs () !== 'win') {
-    callback ();
     return;
   }
 
-  this._desubst ((err, results) => {
-    this._response.log.info ('umount %s', this._getDrive ());
-    callback (err, results);
-  });
+  const results = yield this._desubst (next);
+  this._response.log.info ('umount %s', this._getDrive ());
+  return results;
 };
 
 module.exports.Subst = Subst;
