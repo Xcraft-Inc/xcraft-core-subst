@@ -1,7 +1,7 @@
 'use strict';
 
-var async     = require ('async');
-var xPlatform = require ('xcraft-core-platform');
+const async     = require ('async');
+const xPlatform = require ('xcraft-core-platform');
 
 
 function prevChar (c) {
@@ -23,13 +23,13 @@ Subst.prototype._getDrive = function () {
 };
 
 Subst.prototype._exec = function (cmd, opts, testCode, callback) {
-  var self = this;
-  var searching = true;
+  const self = this;
+  let searching = true;
 
   async.whilst (function () {
     return searching;
   }, function (callback) {
-    var options = [];
+    const options = [];
     opts.forEach (function (it, index) {
       options[index] = typeof (it) === 'function' ? it.apply (self) : it;
     });
@@ -81,7 +81,7 @@ Subst.prototype._subst = function (callback) {
 };
 
 Subst.prototype._desubst = function (callback ) {
-  var xProcess  = require ('xcraft-core-process') ({
+  const xProcess  = require ('xcraft-core-process') ({
     logger: 'xlog',
     parser: 'null',
     response: this._response
@@ -91,7 +91,7 @@ Subst.prototype._desubst = function (callback ) {
 };
 
 Subst.prototype.mount = function (callback) {
-  var self = this;
+  const self = this;
 
   /* Nothing substed on non-windows platforms. */
   if (xPlatform.getOs () !== 'win') {
@@ -118,7 +118,7 @@ Subst.prototype.mount = function (callback) {
 };
 
 Subst.prototype.umount = function (callback) {
-  var self = this;
+  const self = this;
 
   if (xPlatform.getOs () !== 'win') {
     callback ();
