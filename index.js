@@ -48,7 +48,7 @@ Subst.prototype._exec = function * (cmd, opts, testCode, next) {
     /* Is already used? */
     if (code !== testCode) {
       if (this.drive === 'a') {
-        throw 'no more drive letter available';
+        throw `no more drive letter available, cmd=${cmd} rc=${code}`;
       }
 
       this.drive = prevChar (this.drive);
