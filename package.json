@@ -1,6 +1,6 @@
 {
   "name": "xcraft-core-subst",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Xcraft win-subst helpers",
   "main": "index.js",
   "engines": {
@@ -22,9 +22,9 @@
   "license": "MIT",
   "dependencies": {
     "watt": "^3.2.2",
-    "xcraft-core-fs": "0.1.0",
-    "xcraft-core-platform": "0.1.0",
-    "xcraft-core-process": "0.1.0"
+    "xcraft-core-fs": "^1.0.0",
+    "xcraft-core-platform": "^1.0.0",
+    "xcraft-core-process": "^1.0.0"
   },
   "bugs": {
     "url": "https://github.com/Xcraft-Inc/xcraft-core-subst/issues"
