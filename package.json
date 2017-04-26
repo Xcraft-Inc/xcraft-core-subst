@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/Xcraft-Inc/xcraft-core-subst/issues"
   },
-  "homepage": "https://github.com/Xcraft-Inc/xcraft-core-subst#readme"
+  "homepage": "https://github.com/Xcraft-Inc/xcraft-core-subst#readme",
+  "devDependencies": {
+    "xcraft-dev-rules": "^0.1.6"
+  }
 }
