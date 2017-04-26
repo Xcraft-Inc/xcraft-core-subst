@@ -1,8 +1,7 @@
 'use strict';
 
-const watt      = require ('watt');
+const watt = require ('watt');
 const xPlatform = require ('xcraft-core-platform');
-
 
 function prevChar (c) {
   return String.fromCharCode (c.charCodeAt (0) - 1);
@@ -13,9 +12,9 @@ function Subst (location, resp) {
     return new Subst (location, resp);
   }
 
-  this.drive    = 'z';
+  this.drive = 'z';
   this.location = location;
-  this._resp    = resp;
+  this._resp = resp;
 
   watt.wrapAll (this);
 }
@@ -34,14 +33,14 @@ Subst.prototype._getOptions = function (opts) {
   return options;
 };
 
-Subst.prototype._exec = function * (cmd, opts, testCode, next) {
+Subst.prototype._exec = function* (cmd, opts, testCode, next) {
   while (true) {
     const options = this._getOptions (opts);
 
     const xProcess = require ('xcraft-core-process') ({
       logger: 'xlog',
       parser: 'null',
-      resp:   this._resp
+      resp: this._resp,
     });
 
     const code = yield xProcess.spawn (cmd, options, {}, next);
@@ -75,17 +74,17 @@ Subst.prototype._subst = function (next) {
   this._exec ('subst', [this._getDrive, this.location], 0, next);
 };
 
-Subst.prototype._desubst = function * (next) {
+Subst.prototype._desubst = function* (next) {
   const xProcess = require ('xcraft-core-process') ({
     logger: 'xlog',
     parser: 'null',
-    resp:   this._resp
+    resp: this._resp,
   });
 
-  return yield xProcess.spawn ('subst',  ['/D', this._getDrive ()], {}, next);
+  return yield xProcess.spawn ('subst', ['/D', this._getDrive ()], {}, next);
 };
 
-Subst.prototype.mount = function * (next) {
+Subst.prototype.mount = function* (next) {
   /* Nothing substed on non-windows platforms. */
   if (xPlatform.getOs () !== 'win') {
     return this.location;
@@ -98,7 +97,7 @@ Subst.prototype.mount = function * (next) {
   return this._getDrive ();
 };
 
-Subst.prototype.umount = function * (next) {
+Subst.prototype.umount = function* (next) {
   if (xPlatform.getOs () !== 'win') {
     return;
   }
@@ -109,4 +108,4 @@ Subst.prototype.umount = function * (next) {
 };
 
 module.exports.Subst = Subst;
-module.exports.wrap  = require ('./lib/wrap.js');
+module.exports.wrap = require ('./lib/wrap.js');
