@@ -17,7 +17,7 @@
   "author": "Mathieu Schroeter",
   "license": "MIT",
   "dependencies": {
-    "watt": "^3.2.2",
+    "gigawatts": "^4.0.5",
     "xcraft-core-fs": "^1.0.0",
     "xcraft-core-platform": "^1.0.0",
     "xcraft-core-process": "^1.0.0"

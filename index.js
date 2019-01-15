@@ -1,6 +1,6 @@
 'use strict';
 
-const watt = require('watt');
+const watt = require('gigawatts');
 const xPlatform = require('xcraft-core-platform');
 
 function prevChar(c) {
