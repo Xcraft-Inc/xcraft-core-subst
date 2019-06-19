@@ -9,7 +9,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["xcraft", "subst", "win"],
+  "keywords": [
+    "xcraft",
+    "subst",
+    "win"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Xcraft-Inc/xcraft-core-subst.git"
@@ -18,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "gigawatts": "^4.0.5",
-    "xcraft-core-fs": "^1.0.0",
+    "xcraft-core-fs": "^2.0.0",
     "xcraft-core-platform": "^1.0.0",
     "xcraft-core-process": "^1.0.0"
   },
@@ -27,6 +31,9 @@
   },
   "homepage": "https://github.com/Xcraft-Inc/xcraft-core-subst#readme",
   "devDependencies": {
-    "xcraft-dev-rules": "^0.4.0"
-  }
+    "prettier": "1.18.2",
+    "xcraft-dev-prettier": "^1.0.0",
+    "xcraft-dev-rules": "^1.0.2"
+  },
+  "prettier": "xcraft-dev-prettier"
 }
