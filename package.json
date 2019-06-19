@@ -1,6 +1,6 @@
 {
   "name": "xcraft-core-subst",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Xcraft win-subst helpers",
   "main": "index.js",
   "engines": {
