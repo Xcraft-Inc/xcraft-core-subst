@@ -19,11 +19,11 @@ function Subst(location, resp) {
   watt.wrapAll(this);
 }
 
-Subst.prototype._getDrive = function() {
+Subst.prototype._getDrive = function () {
   return this.drive + ':';
 };
 
-Subst.prototype._getOptions = function(opts) {
+Subst.prototype._getOptions = function (opts) {
   const options = [];
 
   opts.forEach((opt, index) => {
@@ -33,7 +33,7 @@ Subst.prototype._getOptions = function(opts) {
   return options;
 };
 
-Subst.prototype._exec = function*(cmd, opts, testCode, next) {
+Subst.prototype._exec = function* (cmd, opts, testCode, next) {
   while (true) {
     const options = this._getOptions(opts);
 
@@ -63,18 +63,18 @@ Subst.prototype._exec = function*(cmd, opts, testCode, next) {
  * This test is necessary because the subst command is ables to subst a mapped
  * drive when this one is disconnected. This behaviour is not acceptable.
  */
-Subst.prototype._netUse = function(next) {
+Subst.prototype._netUse = function (next) {
   this._exec('net', ['use', this._getDrive], 2, next);
 };
 
 /*
  * Not like _netUse, here the drive is substed when possible.
  */
-Subst.prototype._subst = function(next) {
+Subst.prototype._subst = function (next) {
   this._exec('subst', [this._getDrive, this.location], 0, next);
 };
 
-Subst.prototype._desubst = function*(next) {
+Subst.prototype._desubst = function* (next) {
   const xProcess = require('xcraft-core-process')({
     logger: 'xlog',
     parser: 'null',
@@ -84,7 +84,7 @@ Subst.prototype._desubst = function*(next) {
   return yield xProcess.spawn('subst', ['/D', this._getDrive()], {}, next);
 };
 
-Subst.prototype.mount = function*(next) {
+Subst.prototype.mount = function* (next) {
   /* Nothing substed on non-windows platforms. */
   if (xPlatform.getOs() !== 'win') {
     return this.location;
@@ -97,7 +97,7 @@ Subst.prototype.mount = function*(next) {
   return this._getDrive();
 };
 
-Subst.prototype.umount = function*(next) {
+Subst.prototype.umount = function* (next) {
   if (xPlatform.getOs() !== 'win') {
     return;
   }
