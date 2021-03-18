@@ -15,6 +15,7 @@ function Subst(location, resp) {
   this.drive = 'z';
   this.location = location;
   this._resp = resp;
+  this._skip = xPlatform.getOs() !== 'win' || location.length < 32;
 
   watt.wrapAll(this);
 }
@@ -86,7 +87,7 @@ Subst.prototype._desubst = function* (next) {
 
 Subst.prototype.mount = function* (next) {
   /* Nothing substed on non-windows platforms. */
-  if (xPlatform.getOs() !== 'win') {
+  if (this._skip) {
     return this.location;
   }
 
@@ -98,7 +99,7 @@ Subst.prototype.mount = function* (next) {
 };
 
 Subst.prototype.umount = function* (next) {
-  if (xPlatform.getOs() !== 'win') {
+  if (this._skip) {
     return;
   }
 
