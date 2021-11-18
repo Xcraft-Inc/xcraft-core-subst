@@ -110,3 +110,4 @@ Subst.prototype.umount = function* (next) {
 
 module.exports.Subst = Subst;
 module.exports.wrap = require('./lib/wrap.js');
+module.exports.wrapTmp = require('./lib/wrap-tmp.js');
