@@ -4,6 +4,17 @@
 
 Le module `xcraft-core-subst` est une bibliothèque utilitaire pour le framework Xcraft qui permet de gérer les substitutions de lecteurs sous Windows. Il offre une solution pour contourner les limitations de longueur de chemin sous Windows en montant temporairement des chemins longs sur des lettres de lecteur.
 
+## Sommaire
+
+- [Structure du module](#structure-du-module)
+- [Fonctionnement global](#fonctionnement-global)
+- [Exemples d'utilisation](#exemples-dutilisation)
+- [Interactions avec d'autres modules](#interactions-avec-dautres-modules)
+- [Détails des sources](#détails-des-sources)
+  - [index.js](#indexjs)
+  - [lib/wrap.js](#libwrapjs)
+  - [lib/wrap-tmp.js](#libwrap-tmpjs)
+
 ## Structure du module
 
 - **Subst** : Classe principale pour gérer les substitutions de lecteurs
@@ -15,6 +26,8 @@ Le module `xcraft-core-subst` est une bibliothèque utilitaire pour le framework
 Le module fonctionne principalement sur Windows pour résoudre le problème des chemins trop longs (> 260 caractères). Il utilise la commande `subst` de Windows pour associer un chemin à une lettre de lecteur, permettant ainsi d'accéder à des fichiers avec des chemins très longs via un chemin plus court.
 
 Sur les systèmes non-Windows, le module est inactif et retourne simplement les chemins d'origine sans modification.
+
+Le processus de substitution commence par la lettre 'z' et descend dans l'alphabet si nécessaire, jusqu'à 'a'. Si aucune lettre n'est disponible, une exception est levée.
 
 ## Exemples d'utilisation
 
@@ -98,6 +111,15 @@ Ce fichier contient la classe principale `Subst` qui gère la substitution de le
 
 La classe utilise les commandes Windows `net use` et `subst` pour vérifier et effectuer les substitutions.
 
+#### Méthodes privées
+
+- **_getDrive()** : Retourne la lettre de lecteur actuelle avec le caractère ':'
+- **_getOptions(opts)** : Prépare les options pour les commandes système
+- **_exec(cmd, opts, testCode, next)** : Exécute une commande système et vérifie son code de retour
+- **_netUse(next)** : Vérifie si la lettre de lecteur est déjà utilisée
+- **_subst(next)** : Effectue la substitution de lecteur
+- **_desubst(next)** : Supprime la substitution de lecteur
+
 ### `lib/wrap.js`
 
 Ce fichier fournit une fonction utilitaire qui :
@@ -119,9 +141,18 @@ Ce fichier fournit une fonction qui :
 
 Cette fonction est utile pour travailler avec des fichiers qui doivent être accessibles via un chemin court, mais sans modifier l'emplacement d'origine.
 
-### `eslint.config.js`
+#### Paramètres
 
-Ce fichier contient la configuration ESLint pour le module, définissant les règles de style de code et les plugins utilisés pour le développement.
+- **location** : Chemin source des fichiers
+- **tmpDir** : Nom du dossier temporaire à créer
+- **resp** : Objet de réponse Xcraft
+- **overwrite** (optionnel, défaut: false) : Si true, écrase le dossier temporaire s'il existe déjà
+
+#### Retour
+
+Un objet contenant :
+- **dest** : Le chemin de destination (soit le chemin original, soit le chemin temporaire)
+- **unwrap** : Une fonction pour nettoyer les fichiers temporaires
 
 ## Configuration avancée
 
